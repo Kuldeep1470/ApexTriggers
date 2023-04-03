@@ -8,6 +8,7 @@ public with sharing class AccountTriggerHandler {
     public static void afterInsert(List<Account> newList) {
         insertDefaultAccountContact(newList);
         insertOpportunity(newList);
+        createRelatedAccount(newList);
     }
     
     public static void beforeUpdate(List<Account> newList, Map<Id, Account> oldMap) {
@@ -31,6 +32,20 @@ public with sharing class AccountTriggerHandler {
     
     public static void afterDelete(List<Account> oldList) {
         
+    }
+
+    private static void createChildAccount(List<Account> accounts){
+        List<Account> childAccounts = new List<Account>();
+        for (Account account : accounts) {
+            if (account.ParentId != NULL && account.ParentId != account.Parent.ParentId) {
+                    Continue;
+            }
+                Account childAccount = new Account();
+                childAccount.Name = account.Name;
+                childAccount.ParentId = account.Id;
+                childAccounts.add(childAccount);
+        }
+        insert childAccounts;
     }
 
    /* private static void onlySystemAdminCanDelete(List<Account> accounts) {
