@@ -1,5 +1,5 @@
 public with sharing class TaskFinder {
-    public static List<Task> getOpportunityRelatedTasks(List<Opportunity> opportunities, Map<Id, Opportunity> opportunityMap) {
+    public static void getOpportunityRelatedTasks(List<Opportunity> opportunities, Map<Id, Opportunity> opportunityMap) {
         List<Task> tasks = new List<Task>();
         for (Opportunity opportunity : opportunities) {
             if (opportunity.StageName != opportunityMap.get(opportunity.Id).StageName) {
@@ -12,6 +12,8 @@ public with sharing class TaskFinder {
                 tasks.add(task);
             }
         }
-        return tasks;
+        if (!tasks.isEmpty()) {
+            update tasks;
+        }
     }
 }

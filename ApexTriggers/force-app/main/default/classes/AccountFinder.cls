@@ -1,6 +1,6 @@
 public with sharing class AccountFinder {
 
-    public static List<Account> opportunityRelatedAccounts(List<Opportunity> opportunities){
+    public static void opportunityRelatedAccounts(List<Opportunity> opportunities){
         List<Account> accounts = new List<Account>();
 
         for(Opportunity opportunity : opportunities){
@@ -12,10 +12,12 @@ public with sharing class AccountFinder {
             }
         }
 
-        return accounts;
+        if (!accounts.isEmpty()) {
+            update accounts;
+        }
     }
 
-    public static List<Account> UpdateOpportunityRelatedAccounts(Set<Id> AccountIds) {
+    public static void UpdateOpportunityRelatedAccounts(Set<Id> AccountIds) {
         List<Account> accounts = new List<Account>();
         AggregateResult[] groupedResults = [SELECT AccountId, Sum(Amount)annulRevenue FROM Opportunity  WHERE AccountId IN: AccountIds GROUP BY AccountId];
 
@@ -25,11 +27,12 @@ public with sharing class AccountFinder {
             accounts.add(new Account(Id = accountId, AnnualRevenue = annualRevenue));
             System.debug(variable.get('AccountId')+ '->' + variable.get('annulRevenue'));
         }
-
-        return accounts;
+        if (accounts.isEmpty()) {
+            update accounts;
+        }
     }
 
-    public static List<Account> caseRelatedAccounts(List<Case> cases){
+    public static void caseRelatedAccounts(List<Case> cases){
         List<Account> accounts = new List<Account>();
         for(Case newCase : cases){
             if(newCase.AccountId != NULL){
@@ -39,10 +42,12 @@ public with sharing class AccountFinder {
                 accounts.add(account);
             }
         }
-        return accounts;
+        if (!accounts.isEmpty()) {
+            update accounts;
+        }
     }
 
-    public static List<Account> caseRelatedAccountsWithRecordTypes(Set<Id> accountIds){
+    public static void caseRelatedAccountsWithRecordTypes(Set<Id> accountIds){
         List<Account> accounts = new List<Account>();
         Id customerCaseId = [SELECT Id, Name FROM RecordType WHERE Name = 'Customer Case'].Id;
         Id partnerCaseId =  [SELECT Id, Name FROM RecordType WHERE Name = 'Partner Case'].Id;
@@ -60,22 +65,20 @@ public with sharing class AccountFinder {
             }
             accounts.add(account);
         }
-
-        return accounts;
+        if (!accounts.isEmpty()) {
+            update accounts;
+        }
     }
 
-    public static List<Account> getEmployeesRelatedAccounts(List<Employee__c> employees) {
-        Set<Id> accountIds = new Set<Id>();
-        for (Employee__c employee : employees) {
-            accountIds.add(employee.AccountId__c);
-        }
-        
+    public static void getEmployeesRelatedAccounts(Set<Id> accountIds) {
         List<Account> accounts =[SELECT Id, Name, Left_Employee_Count__c, (SELECT Id, AccountId__c FROM Employees__r) FROM Account];
         for (Account account : accounts) {
             account.Left_Employee_Count__c = account.Employees__r.size();
             account.Present_Employee_Count__c = account.Employees__r.size();
         }
-        return accounts;
+        if (!accounts.isEmpty()) {
+            update accounts;
+        }
     }
 
 }

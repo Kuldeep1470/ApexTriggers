@@ -78,10 +78,10 @@ public with sharing class AccountTriggerHandler {
 
     private static void updateRatingForMedia(List<Account> accounts, Map<Id, Account> accountMap){
         for(Account account : accounts){
-            if(accountMap.containskey(account.Id) && account.Industry != accountMap.get(account.Id).Industry){
-                if(account.Industry != NULL && account.Industry == 'Media'){
-                    account.Rating = 'Hot';
-                }
+            if(accountMap.containskey(account.Id) 
+               && account.Industry != accountMap.get(account.Id).Industry
+               && account.Industry != NULL && account.Industry == 'Media'){
+                account.Rating = 'Hot';
             }
         }
     }
@@ -191,30 +191,18 @@ public with sharing class AccountTriggerHandler {
     }
     
     private static void insertDefaultAccountContact(List<Account> account){
-        List<Contact> contacts = ContactFinder.accountRelatedContact(account);
-        if(!contacts.isEmpty()){
-            insert contacts;
-        }
+        ContactFinder.accountRelatedContact(account);
     }
 
     private static void insertOpportunity(List<Account> accounts){
-        List<Opportunity> opportunities = OpportunityFinder.accountRelatedOpportunity(accounts);
-        if(!opportunities.isEmpty()){
-            insert opportunities;
-        }
+        OpportunityFinder.accountRelatedOpportunity(accounts);
     }
 
     private static void updateHomePhoneOnRelatedContacts(List<Account> accounts, Map<Id, Account> accountMap){
-        List<Contact> contacts = ContactFinder.accountRelatedContact(accounts, accountMap);
-        if(!contacts.isEmpty()){
-            update contacts;
-        }
+        ContactFinder.accountRelatedContact(accounts, accountMap);
     }
 
     private static void updateRelatedAccountOpportunityStage(List<Account> accounts, Map<Id, Account> accountMap) {
-        List<Opportunity> opportunities = OpportunityFinder.getAccountRelatedOpportunity(accounts, accountMap);
-        if (!opportunities.isEmpty()) {
-            update opportunities;
-        }
+        OpportunityFinder.getAccountRelatedOpportunity(accounts, accountMap);
     }
 }

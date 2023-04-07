@@ -22,14 +22,16 @@ public class EmployeeTriggerHandler {
 
     public static void afterUndelete(List<Employee__c> newList) {
         updateActiveField(newList);
-        
     }
 
     private static void updateLeftEmployeeCountAccountField(List<Employee__c> employees) {
-        List<Account> accounts = AccountFinder.getEmployeesRelatedAccounts(employees);
-        if (!accounts.isEmpty()) {
-            update accounts;
+        Set<Id> accountIds = new Set<Id>();
+        for (Employee__c employee : employees) {
+            accountIds.add(employee.AccountId__c);
         }
+
+        AccountFinder.getEmployeesRelatedAccounts(accountIds);
+
     }
 
     private static void updateActiveField(List<Employee__c> employees){

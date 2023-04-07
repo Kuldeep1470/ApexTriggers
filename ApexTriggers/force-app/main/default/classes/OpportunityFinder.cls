@@ -1,5 +1,5 @@
 public with sharing class OpportunityFinder {
-    public static List<Opportunity> accountRelatedOpportunity(List<Account> accounts) {
+    public static void accountRelatedOpportunity(List<Account> accounts) {
         List<Opportunity> opportunities = new List<Opportunity>();
         for (Account account : accounts) {
             if(account.Opportunity__c && account.Active__c =='yes'){
@@ -12,10 +12,12 @@ public with sharing class OpportunityFinder {
                 opportunities.add(opportunity);
             }
         }
-        return opportunities;
+        if (!opportunities.isEmpty()) {
+            insert opportunities;
+        }
     }
 
-    public static List<Opportunity> getAccountRelatedOpportunity(List<Account> accounts, Map<Id,Account> accountMap) {
+    public static void getAccountRelatedOpportunity(List<Account> accounts, Map<Id,Account> accountMap) {
         List<Opportunity> opportunities = [SELECT Id, StageName, Annual_Revenue__c, Account.AnnualRevenue, AccountId, Account.Active__c FROM Opportunity WHERE AccountId IN: accountMap.keySet()];
         
         for (Opportunity opportunity : opportunities) {
@@ -29,7 +31,8 @@ public with sharing class OpportunityFinder {
                 opportunity.Annual_Revenue__c = opportunity.Account.AnnualRevenue;
             }
         }
-        
-        return opportunities;
+        if (!opportunities.isEmpty()) {
+            update opportunities;
+        }
     }
 }

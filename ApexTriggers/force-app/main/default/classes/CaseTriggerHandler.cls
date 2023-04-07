@@ -25,10 +25,7 @@ public class CaseTriggerHandler {
     }
     
     private static void putLatestAccountCaseNumber(List<Case> cases){
-        List<Account> accounts = AccountFinder.caseRelatedAccounts(cases);
-        if(!accounts.isEmpty()){
-            update accounts;
-        }
+        AccountFinder.caseRelatedAccounts(cases);
     }
 
     private static void showNumbersOfCaseRecordTypes(List<Case> cases) {
@@ -38,9 +35,6 @@ public class CaseTriggerHandler {
            caseRelatedAccounts.add(accountCase.AccountId);
         }
 
-        List<Account> accounts = AccountFinder.caseRelatedAccountsWithRecordTypes(caseRelatedAccounts);
-        if (!accounts.isEmpty()) {
-            update accounts;
-        }
+        AccountFinder.caseRelatedAccountsWithRecordTypes(caseRelatedAccounts);
     }
 }
