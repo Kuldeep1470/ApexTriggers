@@ -1,6 +1,6 @@
 public class ContactFinder {
 
-    public static void accountRelatedContact(List<Account> accounts){
+    public static List<contact> accountRelatedContact(List<Account> accounts){
         List<Contact> contacts = new List<Contact>();
         for(Account account : accounts) {
             if(account.Contact__c) {
@@ -21,9 +21,7 @@ public class ContactFinder {
                 contacts.add(contact);
             }
         }
-        if (!contacts.isEmpty()) {
-            insert contacts;
-        }
+        return contacts;
     }
 /*
     public static List<contact> accountRelatedContact(List<Account> accounts, Map<Id, Account> accountMap){
@@ -72,57 +70,55 @@ public class ContactFinder {
     }
     */
 
-    public static void accountRelatedContact(List<Account> accounts, Map<Id, Account> accountMap){
+    public static List<contact> accountRelatedContact(List<Account> accounts, Map<Id, Account> accountMap){
 
         List<Account> accountsWithContacts = [ SELECT Id, Phone, BillingStreet, BillingState, BillingPostalCode, BillingAddress, BillingGeocodeAccuracy, BillingCountry, BillingCity, BillingLatitude,
                                              ( SELECT Id, HomePhone, AccountId, MailingCity, MailingCountry, MailingGeocodeAccuracy, MailingLatitude, MailingPostalCode, MailingState, MailingStreet 
-                                               FROM Contacts ) FROM Account WHERE Id IN: accountMap ];
+                                               FROM Contacts ) FROM Account WHERE Id IN: accountMap.keySet() ];
         List<Contact> contacts = new List<Contact>();
-        for (Account account : accountsWithContacts) {
-            
-                for (Contact contact : account.contacts) {
+       for (Account account : accountsWithContacts) {
+        
+            for (Contact contact : account.contacts) {
 
-                    Account oldAccount = accountMap.get(account.Id);
-                    if(account.Phone != oldAccount.Phone){
-                        contact.HomePhone = account.Phone;
-                    }
+                Account oldAccount = accountMap.get(account.Id);
+                if(account.Phone != oldAccount.Phone){
+                    contact.HomePhone = account.Phone;
+                }
 
-                    if(account.BillingCity != NULL && account.BillingCity != oldAccount.BillingCity) { 
-                        contact.MailingCity = account.BillingCity;
-                    }
+                if(account.BillingCity != NULL && account.BillingCity != oldAccount.BillingCity) { 
+                    contact.MailingCity = account.BillingCity;
+                }
 
-                    if(account.BillingCountry != NULL && account.BillingCountry != oldAccount.BillingCountry) { 
-                        contact.MailingCountry = account.BillingCountry;
-                    }
+                if(account.BillingCountry != NULL && account.BillingCountry != oldAccount.BillingCountry) { 
+                    contact.MailingCountry = account.BillingCountry;
+                }
 
-                    if(account.BillingGeocodeAccuracy != NULL && account.BillingGeocodeAccuracy != oldAccount.BillingGeocodeAccuracy) { 
-                        contact.MailingGeocodeAccuracy = account.BillingGeocodeAccuracy;
-                    }
+                if(account.BillingGeocodeAccuracy != NULL && account.BillingGeocodeAccuracy != oldAccount.BillingGeocodeAccuracy) { 
+                    contact.MailingGeocodeAccuracy = account.BillingGeocodeAccuracy;
+                }
 
-                    if(account.BillingLatitude != NULL && account.BillingAddress != oldAccount.BillingAddress) { 
-                        contact.MailingLatitude = account.BillingLatitude;
-                    }
+                if(account.BillingLatitude != NULL && account.BillingAddress != oldAccount.BillingAddress) { 
+                    contact.MailingLatitude = account.BillingLatitude;
+                }
 
-                    if(account.BillingPostalCode != NULL && account.BillingPostalCode != oldAccount.BillingPostalCode) { 
-                        contact.MailingPostalCode = account.BillingPostalCode;
-                    }
-                    
-                    if(account.BillingState != NULL && account.BillingState != oldAccount.BillingState) { 
-                        contact.MailingState = account.BillingState;
-                    }
-                    
-                    if(account.BillingStreet != NULL && account.BillingStreet != oldAccount.BillingStreet) { 
-                        contact.MailingStreet = account.BillingStreet;
-                    }
-                    contacts.add(contact);
-                    
+                if(account.BillingPostalCode != NULL && account.BillingPostalCode != oldAccount.BillingPostalCode) { 
+                    contact.MailingPostalCode = account.BillingPostalCode;
                 }
                 
+                if(account.BillingState != NULL && account.BillingState != oldAccount.BillingState) { 
+                    contact.MailingState = account.BillingState;
+                }
+                
+                if(account.BillingStreet != NULL && account.BillingStreet != oldAccount.BillingStreet) { 
+                    contact.MailingStreet = account.BillingStreet;
+                }
+                contacts.add(contact);
+
             }
-    
-        if (!contacts.isEmpty()) {
-            update contacts;
+            
         }
+    
+        return contacts;
     }
 
 

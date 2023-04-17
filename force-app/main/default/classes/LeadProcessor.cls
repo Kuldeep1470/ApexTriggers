@@ -1,5 +1,6 @@
-global class LeadProcessor implements Database.Batchable<sObject>, Database.Stateful {
-
+global class LeadProcessor implements 
+Database.Batchable<sObject>, Database.Stateful {
+    
     // instance member to retain state across transactions
     global Integer recordsProcessed = 0;
 
