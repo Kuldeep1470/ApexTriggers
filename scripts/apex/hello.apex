@@ -1,10 +1,11 @@
-// Use .apex files to store anonymous Apex.
-// You can execute anonymous Apex in VS Code by selecting the
-//     apex text and running the command:
-//     SFDX: Execute Anonymous Apex with Currently Selected Text
-// You can also execute the entire file by running the command:
-//     SFDX: Execute Anonymous Apex with Editor Contents
+List<Junction__c> junction= [SELECT Id, Name, ParentOne__c, ParentOne__r.Start_Date__c, ParentTwo__c, ParentTwo__r.Start_Date__c FROM Junction__c ];
 
-string tempvar = 'Enter_your_name_here';
-System.debug('Hello World!');
-System.debug('My name is ' + tempvar);
+Map<Id, Id> mapName = new Map<Id, Id>();
+
+
+
+for (junction__c jun : junction) {
+    mapName.put(jun.ParentOne__c, jun.ParentTwo__c);
+}
+
+System.debug(mapName);
